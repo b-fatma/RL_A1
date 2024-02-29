@@ -23,6 +23,7 @@ class BaseAgent:
         if policy == 'greedy':
             # TO DO: Add own code
             a = argmax(self.Q_sa[s, :])
+            return a
                         
         elif policy == 'egreedy':
             if epsilon is None:
@@ -33,6 +34,7 @@ class BaseAgent:
                 a = np.random.randint(0,self.n_actions) 
             else:
                 a = argmax(self.Q_sa[s, :])
+            return a
                  
         elif policy == 'softmax':
             if temp is None:
@@ -40,10 +42,8 @@ class BaseAgent:
                 
             # TO DO: Add own code
             p_as = softmax(self.Q_sa[s, :], temp)
-            a = 
-            a = np.random.randint(0,self.n_actions) # Replace this with correct action selection
-              
-        return a
+            a = np.random.choice(np.arange(self.n_actions), p=p_as)
+            return a
         
     def update(self):
         raise NotImplementedError('For each agent you need to implement its specific back-up method') # Leave this and overwrite in subclasses in other files

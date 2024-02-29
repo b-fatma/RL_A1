@@ -6,7 +6,7 @@ Leiden University, The Netherlands
 By Thomas Moerland
 """
 import matplotlib
-matplotlib.use('TkAgg') # 'TkAgg''Qt5Agg'
+matplotlib.use('Qt5Agg') # 'TkAgg''Qt5Agg'
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle,Circle,Arrow
