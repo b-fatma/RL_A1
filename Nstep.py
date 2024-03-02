@@ -18,6 +18,7 @@ class NstepQLearningAgent(BaseAgent):
         rewards is a list of rewards observed in the episode, of length T_ep
         done indicates whether the final s in states is was a terminal state '''
         # TO DO: Add own code
+        
         pass
 
 def n_step_Q(n_timesteps, max_episode_length, learning_rate, gamma, 
@@ -32,7 +33,43 @@ def n_step_Q(n_timesteps, max_episode_length, learning_rate, gamma,
     eval_returns = []
 
     # TO DO: Write your n-step Q-learning algorithm here!
-    
+    for t in range(1, n_timesteps + 1):
+        state = env.reset()
+        episode_states = [state]
+        episode_actions = []
+        episode_rewards = []
+        done = False
+
+        # Collect an episode
+        for _ in range(max_episode_length):
+            if policy=='greedy':
+                action = pi.select_action(state, 'greedy')
+            elif policy == 'egreedy':
+                action = pi.select_action(state, 'egreedy', epsilon=epsilon)
+            elif policy == 'softmax':
+                action = pi.select_action(state, 'softmax', temp=temp)
+            next_state, reward, done = env.step(action)
+            episode_states.append(next_state)
+            episode_actions.append(action)
+            episode_rewards.append(reward)
+
+            state = next_state
+
+            if done:
+                break
+
+        # Update Q-values using n-step Q-learning
+        pi.update(episode_states, episode_actions, episode_rewards, done, n)
+
+        # Evaluate the agent at regular intervals
+        if t % eval_interval == 0:
+            eval_return = pi.evaluate(eval_env)
+            eval_returns.append(eval_return)
+            eval_timesteps.append(t)
+
+        if plot:
+            env.render(Q_sa=pi.Q_sa, plot_optimal_policy=True, step_pause=0.1)
+
     # if plot:
     #    env.render(Q_sa=pi.Q_sa,plot_optimal_policy=True,step_pause=0.1) # Plot the Q-value estimates during n-step Q-learning execution
         
