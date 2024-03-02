@@ -32,35 +32,35 @@ def q_learning(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None
     
     for t in range(1, n_timesteps + 1):
         state = env.reset()
-        total_reward = 0
 
         while True:
             # Choose action using select_action function
             if policy=='greedy':
                 a = agent.select_action(state, 'greedy')
             elif policy == 'egreedy':
-                a = agent.select_action(state, 'egreedy', epsilon)
+                a = agent.select_action(state, 'egreedy', epsilon=epsilon)
             elif policy == 'softmax':
-                a = agent.select_action(state, 'softmax', temp)
+                a = agent.select_action(state, 'softmax', temp=temp)
 
             next_state, reward, done = env.step(a)
 
             # Update Q-values using the Q-learning update rule
             agent.update(state, a, reward, next_state, done)
 
-            total_reward += reward
             state = next_state
 
             if done:
                 break
+
+        if plot:
+            env.render(Q_sa=agent.Q_sa, plot_optimal_policy=True, step_pause=0.1) 
+            
 
         if t % eval_interval == 0:
             eval_return = agent.evaluate(eval_env)
             eval_timesteps.append(t)
             eval_returns.append(eval_return)
 
-    if plot:
-        env.render(Q_sa=agent.Q_sa, plot_optimal_policy=True, step_pause=0.1)
 
     return np.array(eval_returns), np.array(eval_timesteps)
 
@@ -68,19 +68,19 @@ def q_learning(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None
 def test():
     
     n_timesteps = 1000
-    eval_interval=100
+    eval_interval = 100
     gamma = 1.0
-    learning_rate = 0.1
+    learning_rate = 0.2
 
     # Exploration
     policy = 'egreedy' # 'egreedy' or 'softmax' 
-    epsilon = 0.1
+    epsilon = 0.5
     temp = 1.0
     
     # Plotting parameters
     plot = True
 
-    eval_returns, eval_timesteps = q_learning(n_timesteps, learning_rate, gamma, policy, epsilon, temp, plot, eval_interval)
+    eval_returns, eval_timesteps = q_learning(n_timesteps, learning_rate, gamma, policy, epsilon=epsilon, temp=temp, plot=plot, eval_interval=eval_interval)
     print(eval_returns,eval_timesteps)
 
 if __name__ == '__main__':
