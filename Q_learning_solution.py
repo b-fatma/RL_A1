@@ -29,35 +29,31 @@ def q_learning(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None
     eval_returns = []
     
     # TO DO: Write your Q-learning algorithm here!
-    
+    state = env.reset()
     for t in range(1, n_timesteps + 1):
-        state = env.reset()
+        
+        if policy=='greedy':
+            a = agent.select_action(state, 'greedy')
+        elif policy == 'egreedy':
+            a = agent.select_action(state, 'egreedy', epsilon=epsilon)
+        elif policy == 'softmax':
+            a = agent.select_action(state, 'softmax', temp=temp)
 
-        while True:
-            # Choose action using select_action function
-            if policy=='greedy':
-                a = agent.select_action(state, 'greedy')
-            elif policy == 'egreedy':
-                a = agent.select_action(state, 'egreedy', epsilon=epsilon)
-            elif policy == 'softmax':
-                a = agent.select_action(state, 'softmax', temp=temp)
-
-            next_state, reward, done = env.step(a)
+        next_state, reward, done = env.step(a)
             
 
 
-            # Update Q-values using the Q-learning update rule
-            agent.update(state, a, reward, next_state, done)
+        # Update Q-values using the Q-learning update rule
+        agent.update(state, a, reward, next_state, done)
 
+        if done:
+                env.reset()
+        else:
             state = next_state
 
-            if plot:
-                env.render(Q_sa=agent.Q_sa, plot_optimal_policy=True, step_pause=0.001) 
+        if plot:
+            env.render(Q_sa=agent.Q_sa, plot_optimal_policy=True, step_pause=0.001) 
                 
-            if done:
-                break
-            
-
         if t % eval_interval == 0:
             eval_return = agent.evaluate(eval_env)
             eval_timesteps.append(t)
@@ -69,13 +65,13 @@ def q_learning(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None
 
 def test():
     
-    n_timesteps = 1000
-    eval_interval = 100
+    n_timesteps = 5000
+    eval_interval = 1000
     gamma = 1.0
     learning_rate = 0.2
 
     # Exploration
-    policy = 'softmax' # 'egreedy' or 'softmax' 
+    policy = 'egreedy' # 'egreedy' or 'softmax' 
     epsilon = 0.1
     temp = 1.0
     
