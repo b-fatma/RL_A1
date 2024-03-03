@@ -30,30 +30,29 @@ def sarsa(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None, tem
     eval_returns = []
 
     # TO DO: Write your SARSA algorithm here!
-    for t in range(1, n_timesteps + 1):
-        state = env.reset()
+    state = env.reset()
+    for t in range(n_timesteps):
+        
+        # Choose action using select_action function
+        if policy=='greedy':
+            a = pi.select_action(state, 'greedy')
+            a_next = pi.select_action(state, 'greedy')
+        elif policy == 'egreedy':
+            a = pi.select_action(state, 'egreedy', epsilon=epsilon)
+            a_next = pi.select_action(state, 'egreedy', epsilon=epsilon)
+        elif policy == 'softmax':
+            a = pi.select_action(state, 'softmax', temp=temp)
+            a_next = pi.select_action(state, 'softmax', temp=temp)
 
-        while True:
-            # Choose action using select_action function
-            if policy=='greedy':
-                a = pi.select_action(state, 'greedy')
-                a_next = pi.select_action(state, 'greedy')
-            elif policy == 'egreedy':
-                a = pi.select_action(state, 'egreedy', epsilon=epsilon)
-                a_next = pi.select_action(state, 'egreedy', epsilon=epsilon)
-            elif policy == 'softmax':
-                a = pi.select_action(state, 'softmax', temp=temp)
-                a_next = pi.select_action(state, 'softmax', temp=temp)
+        next_state, reward, done = env.step(a)
 
-            next_state, reward, done = env.step(a)
+        # Update Q-values using the SARSA update rule
+        pi.update(state, a, reward, next_state, a_next, done)
 
-            # Update Q-values using the SARSA update rule
-            pi.update(state, a, reward, next_state, a_next, done)
-
+        if done:
+            env.reset()
+        else:
             state = next_state
-
-            if done:
-                break
 
         if plot:
             env.render(Q_sa=pi.Q_sa, plot_optimal_policy=True, step_pause=0.1) 

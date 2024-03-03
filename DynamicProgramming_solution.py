@@ -42,10 +42,11 @@ def Q_value_iteration(env, gamma=1.0, threshold=0.001):
  
      # TO DO: IMPLEMENT Q-VALUE ITERATION HERE
     i = 0
-
+    
     while True:
         i += 1
-        max_error = 0  # Reset max_error for each iteration
+        # Reset max_error for each iteration
+        max_error = 0
         
         for s in range(QIagent.n_states):  
             for a in range(QIagent.n_actions):  
@@ -54,6 +55,9 @@ def Q_value_iteration(env, gamma=1.0, threshold=0.001):
                 
                 # Update max_error if the current error is larger
                 max_error = max(max_error, error)
+
+                if(max_error < threshold):
+                    break
 
         # Plot current Q-value estimates & print max error
         env.render(Q_sa=QIagent.Q_sa,plot_optimal_policy=True,step_pause=0.2)
@@ -90,7 +94,6 @@ def experiment():
         time_steps += 1
 
     mean_reward_per_timestep = cum_reward / time_steps
-    print(cum_reward)
     # TO DO: Compute mean reward per timestep under the optimal policy
     print("Mean reward per timestep under optimal policy: {}".format(mean_reward_per_timestep))
     

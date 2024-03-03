@@ -18,6 +18,16 @@ class MonteCarloAgent(BaseAgent):
         rewards is a list of rewards observed in the episode, of length T_ep
         done indicates whether the final s in states is was a terminal state '''
         # TO DO: Add own code
+        T_ep = len(states) - 1  # Length of the episode
+
+        G = 0  # Initialize return
+
+        # Update Q-values for each state-action pair in reverse order
+        for t in range(T_ep - 1, -1, -1):
+            G = self.gamma * G + rewards[t]
+            Q_s_a = self.Q_sa[states[t]][actions[t]]
+            delta = G - Q_s_a
+            self.Q_sa[states[t]][actions[t]] += self.learning_rate * delta
 
 def monte_carlo(n_timesteps, max_episode_length, learning_rate, gamma, 
                    policy='egreedy', epsilon=None, temp=None, plot=True, eval_interval=500):
@@ -31,11 +41,30 @@ def monte_carlo(n_timesteps, max_episode_length, learning_rate, gamma,
     eval_returns = []
 
     # TO DO: Write your Monte Carlo RL algorithm here!
-    
-    # if plot:
-    #    env.render(Q_sa=pi.Q_sa,plot_optimal_policy=True,step_pause=0.1) # Plot the Q-value estimates during Monte Carlo RL execution
+    timestep = 0
+    while timestep < n_timesteps:
+        s = env.reset()
+        states = [s]
+        rewards = []
+        actions = []
+        for t in range(max_episode_length):
+            a = pi.select_action(s=s, policy=policy, epsilon=epsilon, temp=temp)
+            s_next, r, done = env.step(a)
+            states.append(s_next)
+            rewards.append(r)
+            actions.append(a)
+            s = s_next
+            timestep += 1
+            if plot:
+                env.render(Q_sa=pi.Q_sa,plot_optimal_policy=True,step_pause=0.1) # Plot the Q-value estimates during n-step Q-learning execution
+            if timestep % eval_interval == 0:
+                eval_timesteps.append(timestep)
+                eval_returns.append(pi.evaluate(eval_env))
+            if done:
+                env.reset()
+                break
 
-                 
+        pi.update(states, actions, rewards)          
     return np.array(eval_returns), np.array(eval_timesteps) 
     
 def test():

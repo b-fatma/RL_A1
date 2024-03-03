@@ -30,7 +30,7 @@ def q_learning(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None
     
     # TO DO: Write your Q-learning algorithm here!
     state = env.reset()
-    for t in range(1, n_timesteps + 1):
+    for t in range(n_timesteps):
         
         if policy=='greedy':
             a = agent.select_action(state, 'greedy')
@@ -41,8 +41,6 @@ def q_learning(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None
 
         next_state, reward, done = env.step(a)
             
-
-
         # Update Q-values using the Q-learning update rule
         agent.update(state, a, reward, next_state, done)
 

@@ -11,8 +11,8 @@ import time
 
 from Q_learning_solution import q_learning
 from SARSA_solution import sarsa
-"""from Nstep_solution import n_step_Q
-from MonteCarlo_solution import monte_carlo"""
+from Nstep_solution import n_step_Q
+from MonteCarlo_solution import monte_carlo
 from Helper import LearningCurvePlot, smooth
 
 def average_over_repetitions(backup, n_repetitions, n_timesteps, max_episode_length, learning_rate, gamma, policy='egreedy', 
@@ -94,7 +94,7 @@ def experiment():
                                               gamma, policy, epsilon, temp, smoothing_window, plot, n, eval_interval)
         Plot.add_curve(timesteps,learning_curve,label=r'softmax, $ \tau $ = {}'.format(temp))
     Plot.add_hline(optimal_episode_return, label="DP optimum")
-    Plot.save('exploration.png')'''
+    Plot.save('exploration.png')
     
     optimal_episode_return = 83.68
     ###### Assignment 3: Q-learning versus SARSA
@@ -110,9 +110,10 @@ def experiment():
                                               gamma, policy, epsilon, temp, smoothing_window, plot, n, eval_interval)
             Plot.add_curve(timesteps,learning_curve,label=r'{}, $\alpha$ = {} '.format(backup_labels[backup],learning_rate))
     Plot.add_hline(optimal_episode_return, label="DP optimum")
-    Plot.save('on_off_policy.png')
+    Plot.save('on_off_policy.png')'''
     
-    """ # ##### Assignment 4: Back-up depth
+    optimal_episode_return = 83.68
+    # ##### Assignment 4: Back-up depth
     policy = 'egreedy'
     epsilon = 0.05 # set epsilon back to original value
     learning_rate = 0.1
@@ -129,7 +130,7 @@ def experiment():
                                           gamma, policy, epsilon, temp, smoothing_window, plot, n, eval_interval)
     Plot.add_curve(timesteps,learning_curve,label='Monte Carlo')        
     Plot.add_hline(optimal_episode_return, label="DP optimum")
-    Plot.save('depth.png')"""
+    Plot.save('depth.png')
 
 if __name__ == '__main__':
     experiment()
