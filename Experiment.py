@@ -72,7 +72,7 @@ def experiment():
     
     ####### Experiments
     
-    '''#### Assignment 1: Dynamic Programming
+    #### Assignment 1: Dynamic Programming
     # Execute this assignment in DynamicProgramming.py
     optimal_episode_return = 83.68 # set the optimal return per episode you found in the DP assignment here
     
@@ -95,7 +95,7 @@ def experiment():
         Plot.add_curve(timesteps,learning_curve,label=r'softmax, $ \tau $ = {}'.format(temp))
     Plot.add_hline(optimal_episode_return, label="DP optimum")
     Plot.save('exploration.png')
-    
+    """
     optimal_episode_return = 83.68
     ###### Assignment 3: Q-learning versus SARSA
     policy = 'egreedy'
@@ -110,7 +110,7 @@ def experiment():
                                               gamma, policy, epsilon, temp, smoothing_window, plot, n, eval_interval)
             Plot.add_curve(timesteps,learning_curve,label=r'{}, $\alpha$ = {} '.format(backup_labels[backup],learning_rate))
     Plot.add_hline(optimal_episode_return, label="DP optimum")
-    Plot.save('on_off_policy.png')'''
+    Plot.save('on_off_policy.png')
     
     optimal_episode_return = 83.68
     # ##### Assignment 4: Back-up depth
@@ -130,7 +130,7 @@ def experiment():
                                           gamma, policy, epsilon, temp, smoothing_window, plot, n, eval_interval)
     Plot.add_curve(timesteps,learning_curve,label='Monte Carlo')        
     Plot.add_hline(optimal_episode_return, label="DP optimum")
-    Plot.save('depth.png')
+    Plot.save('depth.png')"""
 
 if __name__ == '__main__':
     experiment()

@@ -19,15 +19,13 @@ class MonteCarloAgent(BaseAgent):
         done indicates whether the final s in states is was a terminal state '''
         # TO DO: Add own code
         T_ep = len(states) - 1  # Length of the episode
-
-        G = 0  # Initialize return
-
-        # Update Q-values for each state-action pair in reverse order
-        for t in range(T_ep - 1, -1, -1):
-            G = self.gamma * G + rewards[t]
-            Q_s_a = self.Q_sa[states[t]][actions[t]]
-            delta = G - Q_s_a
-            self.Q_sa[states[t]][actions[t]] += self.learning_rate * delta
+        G = 0  # Initialize the return
+        for t in range(T_ep - 1, -1, -1):  # Iterate backward through the episode
+            G = self.gamma * G + rewards[t]  # Update the return
+            state = states[t]
+            action = actions[t]
+            temp = self.Q_sa[state, action]
+            self.Q_sa[state, action] += self.learning_rate * (G - temp)
 
 def monte_carlo(n_timesteps, max_episode_length, learning_rate, gamma, 
                    policy='egreedy', epsilon=None, temp=None, plot=True, eval_interval=500):

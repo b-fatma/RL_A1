@@ -19,31 +19,15 @@ class NstepQLearningAgent(BaseAgent):
         done indicates whether the final s in states is was a terminal state '''
         # TO DO: Add own code
         T_ep = len(states) - 1  # Length of the episode
-
-        # Calculate n-step return
-        G = 0
-        for i in range(n):
-            if i < T_ep:
-                G += (self.gamma ** i) * rewards[i]
-
-        # If the episode is not done, add the estimated Q-value of the next state
-        if not done:
-            G += (self.gamma ** n) * np.max(self.Q_sa[states[T_ep]])
-
-        # Calculate the Q-value of the first state in the episode
-        Q_s_a = self.Q_sa[states[0]][actions[0]]
-
-        # Update the Q-value using the n-step return
-        delta = G - Q_s_a
-        self.Q_sa[states[0]][actions[0]] += self.learning_rate * delta
-
-        # Update Q-values for the rest of the states using the n-step return
-        for t in range(1, T_ep):
-            G = (G - rewards[t-1]) / self.gamma  # Update n-step return
-            Q_s_a = self.Q_sa[states[t]][actions[t]]
-            delta = G - Q_s_a
-            self.Q_sa[states[t]][actions[t]] += self.learning_rate * delta
-        
+        for t in range(T_ep):
+            G = 0  # Reset cumulative return for each time step
+            m = min(n, T_ep-t)
+            for i in range(m):
+                G += (self.gamma ** i) * rewards[t + i]  # Use rewards[t + i]
+            if t + n < T_ep or not done:
+                G += (self.gamma ** m) * np.max(self.Q_sa[states[t+m], :])
+            temp = self.Q_sa[states[t], actions[t]]
+            self.Q_sa[states[t], actions[t]] += self.learning_rate * (G - temp) 
         pass
 
 def n_step_Q(n_timesteps, max_episode_length, learning_rate, gamma, 
@@ -88,7 +72,7 @@ def n_step_Q(n_timesteps, max_episode_length, learning_rate, gamma,
 def test():
     n_timesteps = 500001
     max_episode_length = 1000
-    gamma = 1.0
+    gamma = 0.1
     learning_rate = 0.1
     n = 5
     
