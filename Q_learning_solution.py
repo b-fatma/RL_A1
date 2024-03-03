@@ -43,17 +43,19 @@ def q_learning(n_timesteps, learning_rate, gamma, policy='egreedy', epsilon=None
                 a = agent.select_action(state, 'softmax', temp=temp)
 
             next_state, reward, done = env.step(a)
+            
+
 
             # Update Q-values using the Q-learning update rule
             agent.update(state, a, reward, next_state, done)
 
             state = next_state
 
+            if plot:
+                env.render(Q_sa=agent.Q_sa, plot_optimal_policy=True, step_pause=0.001) 
+                
             if done:
                 break
-
-        if plot:
-            env.render(Q_sa=agent.Q_sa, plot_optimal_policy=True, step_pause=0.1) 
             
 
         if t % eval_interval == 0:
@@ -73,8 +75,8 @@ def test():
     learning_rate = 0.2
 
     # Exploration
-    policy = 'egreedy' # 'egreedy' or 'softmax' 
-    epsilon = 0.5
+    policy = 'softmax' # 'egreedy' or 'softmax' 
+    epsilon = 0.1
     temp = 1.0
     
     # Plotting parameters
